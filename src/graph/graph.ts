@@ -1172,7 +1172,7 @@ export default class Graph extends EventEmitter implements IGraph {
   /**
    * 自动推荐布局
    */
-  public autoLayout(): { [layoutname: string]: number } {
+  public autoLayout(): Array<string | number> {
     const self = this;
     const layoutController = this.get('layoutController');
 
@@ -1219,7 +1219,7 @@ export default class Graph extends EventEmitter implements IGraph {
     let sortedDegrees = [];
     Object.entries(degrees).forEach(([key, value]) => {
       if (value.hasOwnProperty("degree")) {
-        sortedDegrees.push([key, value.degree]);
+        sortedDegrees.push([key, value["degree"]]);
       }
     });
     sortedDegrees.sort((a, b) => {
