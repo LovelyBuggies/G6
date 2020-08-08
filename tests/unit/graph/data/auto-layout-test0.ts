@@ -4,7 +4,8 @@
 
 /**
  * [randn_bm description]
- * @Author   NinoLau from https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve/36481059#36481059
+ * @Author   NinoLau 
+ * @refer    https://stackoverflow.com/questions/25582882/javascript-math-random-normal-distribution-gaussian-bell-curve/36481059#36481059
  * @param    {number}                 min  min value
  * @param    {number}                 max  max value
  * @param    {number}                 skew skew value

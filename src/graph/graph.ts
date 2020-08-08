@@ -45,8 +45,9 @@ import { plainCombosToTrees, traverseTree, reconstructTree, traverseTreeUp } fro
 import degree from '../algorithm/degree';
 import Stack from '../algorithm/structs/stack'
 import adjMatrix from '../algorithm/adjacent-matrix';
-import floydWarshall from '../algorithm/floydWarshall'
-import layoutProbMap from '../algorithm/layoutProbMap'
+import floydWarshall from '../algorithm/floydWarshall';
+import layoutProbMap from '../algorithm/layoutProbMap';
+import { detectAllCycles, detectAllDirectedCycle, detectAllUndirectedCycle } from '../algorithm/';
 
 const NODE = 'node';
 const SVG = 'svg';
@@ -1272,6 +1273,9 @@ export default class Graph extends EventEmitter implements IGraph {
       tense = 'low';
     }
 
+    // circle calculation
+    // console.log(detectAllCycles(this, true));
+
     let layoutProb = layoutProbMap(sensitiveFields, strength, tense);
     let sortedLayoutProb = [];
     let probSum = 0;
@@ -1300,8 +1304,8 @@ export default class Graph extends EventEmitter implements IGraph {
     }
 
     this.emit('afterautolayout');
-    // console.log(sensitiveFields, strength, tense, 
-    //               sortedLayoutProb, choice, chosedLayout);
+    console.log(sensitiveFields, strength, tense, 
+                  sortedLayoutProb, choice, chosedLayout);
     this.updateLayout({
       type: chosedLayout,
     });
