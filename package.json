@@ -101,6 +101,7 @@
     "@umijs/fabric": "^2.0.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
+    "eslint": "^7.6.0",
     "event-simulate": "~1.0.0",
     "father": "^2.29.1",
     "gatsby": "^2.23.9",

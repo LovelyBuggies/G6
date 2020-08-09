@@ -120,7 +120,8 @@ export const detectAllUndirectedCycle = (graph: IGraph, nodeIds?: string[], incl
           let p = parent[curNodeId]
           while (used[neighborId].size && !used[neighborId].has(p)) {
             cyclePath.push(p)
-            p = parent[p.getID()]
+            if (p === parent[p.getID()]) break
+            else p = parent[p.getID()]
           }
           cyclePath.push(p)
 
