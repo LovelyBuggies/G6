@@ -47,7 +47,7 @@ import Stack from '../algorithm/structs/stack'
 import adjMatrix from '../algorithm/adjacent-matrix';
 import floydWarshall from '../algorithm/floydWarshall';
 import layoutProbMap from '../algorithm/layoutProbMap';
-import { detectAllCycles, detectAllDirectedCycle, detectAllUndirectedCycle } from '../algorithm/';
+import { detectAllUndirectedCycle } from '../algorithm/';
 
 const NODE = 'node';
 const SVG = 'svg';
@@ -1053,7 +1053,6 @@ export default class Graph extends EventEmitter implements IGraph {
       });
     } else {
       item = itemController.addItem(type, model);
-      let itemMap = this.get('itemMap');
     }
 
     if ((type === 'node' && model.comboId) || (type === 'combo' && model.parentId)) {
@@ -1183,7 +1182,7 @@ export default class Graph extends EventEmitter implements IGraph {
    */
   private pruneRedundantEdges(): EdgeConfig[] {
     const data: GraphData = this.get('data');
-    const { nodes = [], edges = [] } = data;
+    const { edges = [] } = data;
     const prunedEdges: EdgeConfig[] = [];
     let edgesNum = edges.length;
     for (let i = 0; i < edgesNum; i++) {
@@ -1377,7 +1376,7 @@ export default class Graph extends EventEmitter implements IGraph {
     });
 
     // prune this.data.edges
-    const prunedEdges: EdgeConfig[] = this.pruneRedundantEdges();
+    this.pruneRedundantEdges();
 
     this.emit('beforeautolayout');
     
