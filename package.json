@@ -1,6 +1,6 @@
 {
   "name": "@antv/g6",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "description": "A Graph Visualization Framework in JavaScript",
   "keywords": [
     "antv",
@@ -88,8 +88,9 @@
     "ml-matrix": "^6.5.0"
   },
   "devDependencies": {
-    "@antv/gatsby-theme-antv": "0.10.69",
+    "@antv/gatsby-theme-antv": "^0.11.1",
     "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-react": "^7.7.4",
     "@storybook/addon-actions": "^5.2.8",
     "@storybook/addon-info": "^5.2.8",
@@ -104,7 +105,7 @@
     "eslint": "^7.6.0",
     "event-simulate": "~1.0.0",
     "father": "^2.29.1",
-    "gatsby": "^2.23.9",
+    "gatsby": "^2.24.40",
     "gh-pages": "^2.1.1",
     "husky": "^4.2.5",
     "jest": "^26.0.1",

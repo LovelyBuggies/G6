@@ -28,6 +28,12 @@ insertCss(`
 interface MenuConfig extends IPluginBaseConfig {
   handleMenuClick?: (target: HTMLElement, item: Item) => void;
   getContent?: (graph?: IGraph) => HTMLDivElement | string;
+  // offsetX 与 offsetY 需要加上父容器的 padding
+  offsetX?: number;
+  offsetY?: number;
+  shouldBegin?: (evt?: IG6GraphEvent) => boolean;
+  // 允许出现 tooltip 的 item 类型
+  itemTypes?: string[];
 }
 
 export default class Menu extends Base {
@@ -37,6 +43,8 @@ export default class Menu extends Base {
 
   public getDefaultCfgs(): MenuConfig {
     return {
+      offsetX: 6,
+      offsetY: 6,
       handleMenuClick: undefined,
       // 指定菜单内容，function(e) {...}
       getContent: (graph) => {
@@ -47,10 +55,14 @@ export default class Menu extends Base {
           </ul>
         `
       },
+      shouldBegin: e => {
+        return true
+      },
       // 菜单隐藏事件
       onHide() {
         return true;
       },
+      itemTypes: ['node', 'edge', 'combo']
     };
   }
 
@@ -75,14 +87,25 @@ export default class Menu extends Base {
   }
 
   protected onMenuShow(e: IG6GraphEvent) {
+    const self = this;
     e.preventDefault()
     e.stopPropagation()
+
+    if (!e.item) return;
+
+    const shouldBegin = this.get('shouldBegin');
+    if (!shouldBegin(e)) return;
+
+    const itemTypes = this.get('itemTypes');
+    if (e.item && e.item.getType && itemTypes.indexOf(e.item.getType()) === -1) {
+      self.onMenuHide();
+      return;
+    }
 
     if (!e.item) {
       return
     }
 
-    const self = this;
 
     const menuDom = this.get('menu')
     const getContent = this.get('getContent')
@@ -95,9 +118,11 @@ export default class Menu extends Base {
 
     const handleMenuClick = this.get('handleMenuClick')
     if (handleMenuClick) {
-      menuDom.addEventListener('click', evt => {
+      const handleMenuClickWrapper = (evt) => {
         handleMenuClick(evt.target, e.item)
-      })
+      }
+      this.set('handleMenuClickWrapper', handleMenuClickWrapper)
+      menuDom.addEventListener('click', handleMenuClickWrapper);
     }
 
     const graph: Graph = this.get('graph');
@@ -107,21 +132,19 @@ export default class Menu extends Base {
     const bbox = menuDom.getBoundingClientRect();
 
 
-    let x = e.canvasX//e.item.getModel().x || e.x;
-    let y = e.canvasY//e.item.getModel().y || e.y;
+    const offsetX = this.get('offsetX') || 0
+    const offsetY = this.get('offsetY') || 0
 
-    // 若菜单超出画布范围，反向
+    let x = e.canvasX + offsetX
+    let y = e.canvasY + offsetY
+
     if (x + bbox.width > width) {
-      x = width - bbox.width;
+      x = x - bbox.width - offsetX;
     }
 
     if (y + bbox.height > height) {
-      y = height - bbox.height;
+      y = y - bbox.height - offsetY;
     }
-
-    // const point = graph.getClientByPoint(x, y)
-    // e.canvasX = point.x;
-    // e.canvasY = point.y;
 
     modifyCSS(menuDom, {
       top: `${y}px`,
@@ -147,9 +170,9 @@ export default class Menu extends Base {
     // 隐藏菜单后需要移除事件监听
     document.body.removeEventListener('click', this.get('handler'));
 
-    const handleMenuClick = this.get('handleMenuClick')
-    if (handleMenuClick) {
-      menuDom.removeEventListener('click', handleMenuClick)
+    const handleMenuClickWrapper = this.get('handleMenuClickWrapper');
+    if (handleMenuClickWrapper) {
+      menuDom.removeEventListener('click', handleMenuClickWrapper);
     }
   }
 
@@ -157,9 +180,9 @@ export default class Menu extends Base {
     const menu = this.get('menu')
     const handler = this.get('handler');
 
-    const handleMenuClick = this.get('handleMenuClick')
-    if (handleMenuClick) {
-      menu.removeEventListener('click', handleMenuClick)
+    const handleMenuClickWrapper = this.get('handleMenuClickWrapper');
+    if (handleMenuClickWrapper) {
+      menu.removeEventListener('click', handleMenuClickWrapper);
     }
 
     if (menu) {

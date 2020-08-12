@@ -419,6 +419,9 @@ export default class Graph extends EventEmitter implements IGraph {
 
       // 只有当 enabledStack 为 true 时才起作用
       maxStep: 10,
+
+      // 存储图上的 tooltip dom，方便销毁
+      tooltips: []
     };
   }
 
@@ -1797,15 +1800,8 @@ export default class Graph extends EventEmitter implements IGraph {
 
     comboConfig.children = trees;
 
+    // step 2: 添加 Combo，addItem 时会将子将元素添加到 Combo 中
     currentCombo = this.addItem('combo', comboConfig, false)
-    const comboModel = currentCombo.getModel();
-
-    trees.forEach(child => {
-      const item = this.findById(child.id)
-      // step 2: 将元素添加到 Combo 中
-      currentCombo.addChild(item as INode | ICombo)
-      child.depth = (comboModel.depth as number) + 2;
-    });
 
     // step3: 更新 comboTrees 结构
     const comboTrees = this.get('comboTrees')
@@ -3334,10 +3330,10 @@ export default class Graph extends EventEmitter implements IGraph {
     });
 
     // destroy tooltip doms, removed when upgrade G6 4.0
-    const tooltipContainers = document.getElementsByClassName('g6-tooltip');
-    if (tooltipContainers) {
-      for (let i = 0; i < tooltipContainers.length; i++) {
-        const container = tooltipContainers[i];
+    const tooltipDOMs = this.get('tooltips');
+    if (tooltipDOMs) {
+      for (let i = 0; i < tooltipDOMs.length; i++) {
+        const container = tooltipDOMs[i];
         if (!container) continue;
         const parent = container.parentElement;
         if (!parent) continue;

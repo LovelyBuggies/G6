@@ -108,12 +108,12 @@ export const detectAllUndirectedCycle = (graph: IGraph, nodeIds?: string[], incl
       for (let i = 0; i < neighbors.length; i += 1) {
         const neighbor = neighbors[i]
         const neighborId = neighbor.get('id')
-        if (!(neighborId in used)) { // visit a new node
+        if (neighborId === curNodeId) { // 自环 
+          allCycles.push({ [neighbor.getID()]: curNode })
+        } else if (!(neighborId in used)) {// visit a new node
           parent[neighborId] = curNode
           stack.push(neighbor)
           used[neighborId] = new Set([curNode])
-        } else if (neighborId === curNodeId) {// 自环
-          allCycles.push({ [neighbor.getID()]: curNode })
         } else if (!used[curNodeId].has(neighbor)) { // a cycle found
           let cycleValid = true
           const cyclePath = [neighbor, curNode]
