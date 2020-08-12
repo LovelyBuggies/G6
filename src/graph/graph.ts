@@ -1367,7 +1367,11 @@ export default class Graph extends EventEmitter implements IGraph {
     // update layout configurations
     switch (layoutType) {
       case 'force':
-        let cfg = {preventOverlap: true}
+        let cfg = {
+          preventOverlap: true,
+          nodeStrength: null,
+          edgeStrength: null,
+        }
         if ('value' in sensitiveFields.node) {
           cfg['nodeStrength'] = d => {
             return d.value;
@@ -1423,12 +1427,12 @@ export default class Graph extends EventEmitter implements IGraph {
       case 'dagre':
         let bbox = this.get('group').getCanvasBBox();
         if ((bbox.width - bbox.height) * (height - width) > 0) {
-          let rankdir = 'LR';
+          let dir = 'LR';
         } else {
-          let rankdir = 'TB';
+          let dir = 'TB';
         }
         this.updateLayout({
-          rankdir: rankdir;
+          rankdir: dir,
           nodesep: 5,
           ranksep: 5,
         });
@@ -1440,10 +1444,15 @@ export default class Graph extends EventEmitter implements IGraph {
         });
 
       case 'fruchterman': 
-        let cfg = {preventOverlap: true};
+        let cfg = {
+          preventOverlap: true,
+          cluster: false,
+          gravity: 10,
+          clusterGravity: null,
+        };
         if ('cluster' in sensitiveFields.node) {
           cfg['cluster'] = true;
-          cfg['clusterGravity'] = cfg.gravity || 10;
+          cfg['clusterGravity'] = cfg.gravity;
         }
         this.updateLayout(cfg);
     }
