@@ -1357,6 +1357,8 @@ export default class Graph extends EventEmitter implements IGraph {
       throw new Error('must have a type of layout to configure');
     }
 
+    let sensitiveFields = this.getSensitiveFields();
+
     // get pruned data
     this.pruneRedundantEdges();
     const nodes = this.getNodes();
@@ -1365,9 +1367,18 @@ export default class Graph extends EventEmitter implements IGraph {
     // update layout configurations
     switch (layoutType) {
       case 'force':
-        this.updateLayout({
-          preventOverlap: true,
-        });
+        let cfg = {preventOverlap: true}
+        if ('value' in sensitiveFields.node) {
+          cfg['nodeStrength'] = d => {
+            return d.value;
+          }
+        }
+        if ('weight' in sensitiveFields.edge) {
+          cfg['edgeStrength'] = d => {
+            return d.weight;
+          }
+        }
+        this.updateLayout(cfg);
         break;
 
       case 'radial':
@@ -1382,6 +1393,7 @@ export default class Graph extends EventEmitter implements IGraph {
       case 'concentric':
         this.updateLayout({
           preventOverlap: true,
+          minNodeSpacing: 10,
           maxLevelDiff: 1,
           sortBy: 'degree',
         });
@@ -1422,7 +1434,12 @@ export default class Graph extends EventEmitter implements IGraph {
         });
 
       case 'fruchterman': 
-        this.updateLayout({});
+        let cfg = {preventOverlap: true};
+        if ('cluster' in sensitiveFields.node) {
+          cfg['cluster'] = true;
+          cfg['clusterGravity'] = cfg.gravity || 10;
+        }
+        this.updateLayout(cfg);
     }
   }
 
