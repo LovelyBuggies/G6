@@ -288,6 +288,11 @@ export interface GraphOptions {
    * redo & undo 最大步数, 只有当 enabledStack 为 true 时才起作用
    */
   maxStep?: number;
+
+  /**
+   * 存储图上的 tooltip dom，方便销毁
+   */
+  tooltips?: []
 }
 
 export interface StateStyles {
@@ -364,6 +369,7 @@ export interface ModelConfig extends ModelStyle {
     x: number,
     y: number
   },
+  visible?: boolean
 }
 
 export interface NodeConfig extends ModelConfig {
@@ -554,6 +560,7 @@ export enum G6Event {
   KEYDOWN = 'keydown',
   WHEEL = 'wheel',
   FOCUS = 'focus',
+  BLUR = 'blur',
 
   NODE_CLICK = 'node:click',
   NODE_CONTEXTMENU = 'node:contextmenu',
@@ -583,6 +590,7 @@ export enum G6Event {
   CANVAS_DRAGSTART = 'canvas:dragstart',
   CANVAS_DRAG = 'canvas:drag',
   CANVAS_DRAGEND = 'canvas:dragend',
+  CANVAS_DRAGLEAVE = 'canvas:dragleave',
 
   // combo
   COMBO_CLICK = 'combo:click',
