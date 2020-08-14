@@ -1419,6 +1419,7 @@ export default class Graph extends EventEmitter implements IGraph {
         this.updateLayout({
           preventOverlap: true,
           rows: rows,
+          sortBy: "degree",
         });
         break;
 
@@ -1427,6 +1428,7 @@ export default class Graph extends EventEmitter implements IGraph {
           radius: Math.min(width, height) / 2.5,
           sortBy: 'degree',
           preventOverlap: true,
+          ordering: "degree",
         });
         break;
 
