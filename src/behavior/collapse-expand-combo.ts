@@ -11,7 +11,7 @@ export default {
   getDefaultCfg(): object {
     return {
       trigger: DEFAULT_TRIGGER,
-      relayout: true
+      relayout: true,
     };
   },
   getEvents(): { [key in G6Event]?: string } {
@@ -34,7 +34,7 @@ export default {
     const { item } = evt;
     const { graph, relayout } = this;
 
-    if (!item || item.getType() !== 'combo') return;
+    if (!item || item.destroyed || item.getType() !== 'combo') return;
     const model = item.getModel();
     const comboId = model.id;
     if (!comboId) {
